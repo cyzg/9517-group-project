@@ -22,7 +22,7 @@ for category in sorted(os.listdir(original_dir)):
     imgs = list(cat_path.glob("*"))
     # mix up the order of the photo
     random.shuffle(imgs)
-    split = int(0.8 * len(imgs))
+    split = int(0.8 * len(imgs))  #Change the portion of test/train in here
     train_imgs, test_imgs = imgs[:split], imgs[split:]
     
     (train_dir / category).mkdir(parents=True)
