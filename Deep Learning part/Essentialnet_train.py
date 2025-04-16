@@ -51,7 +51,7 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # Strat training
-for epoch in range(12):
+for epoch in range(12): #change the number of epoch you wanna train
     print(f"start  {epoch+1}  epoch")
     model.train()
     total_loss = 0
