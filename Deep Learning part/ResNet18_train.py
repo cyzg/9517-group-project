@@ -57,8 +57,8 @@ criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
 # start training
-for epoch in range(12):
-    print(f"开始训练第 {epoch+1} 个 epoch")
+for epoch in range(12):  #change the number of model you wanna train
+    print(f"start  {epoch+1} epoch")
     model.train()
     total_loss = 0
 
