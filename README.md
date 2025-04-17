@@ -5,8 +5,11 @@ __Geting the kaggle KPI from Kaggle website__
 
 
 mkdir -p ~/.kaggle
+
 mv /path/to/kaggle.json ~/.kaggle/
+
 chmod 600 ~/.kaggle/kaggle.json
+
 
 __Using this command to download to dataset to your own laptop__
 
