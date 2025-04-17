@@ -84,3 +84,67 @@ tqdm==4.67.1
 typing_extensions==4.13.2
 
 tzdata==2025.2
+
+## Machine Learning part
+
+The machine learning part focused on implementing and comparing various feature extraction techniques and classification models. The main code is included in the `machine_learning.ipynb` notebook, with additional result outputs available.
+
+### Overview
+
+The project explores the following techniques:
+- **Feature Extraction**: Local Binary Patterns (LBP) and Scale-Invariant Feature Transform (SIFT)
+- **Classification Models**: k-Nearest Neighbors (KNN) and Support Vector Machines (SVM)
+
+### Structure
+
+The repository is organized as follows:
+- **`machine_learning.ipynb`**: The main Jupyter Notebook containing the implementation of the feature extraction methods and machine learning models.
+- **Result Files**:
+  - `LBP_KNN`: Results of using LBP for feature extraction combined with KNN for classification.
+  - `LBP_SVM`: Results of using LBP for feature extraction combined with SVM for classification.
+  - `SIFT_KNN`: Results of using SIFT for feature extraction combined with KNN for classification.
+  - `SIFT_SVM`: Results of using SIFT for feature extraction combined with SVM for classification.
+
+### Prerequisites
+
+To run the code in this repository, you need the following:
+- Python 3.8 or higher
+- Jupyter Notebook
+- Required Python libraries (listed in `requirements.txt` or detailed below):
+  - `numpy`
+  - `scikit-learn`
+  - `matplotlib`
+  - `opencv-python`
+
+Install the dependencies using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+### How to Run
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/cyzg/9517-group-project.git
+   cd 9517-group-project
+   ```
+
+2. Open the Jupyter Notebook:
+   ```bash
+   jupyter notebook machine_learning.ipynb
+   ```
+
+3. Follow the instructions in the notebook to execute each section and reproduce the results.
+
+### Results
+
+This part investigates the effectiveness of various combinations of feature extraction methods and classification algorithms. Comprehensive evaluation metrics and result visualizations are provided in the accompanying notebook.
+
+## Authors
+
+This project is developed by the contributors of the repository.
+
+## License
+
+This repository is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
