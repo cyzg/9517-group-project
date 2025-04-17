@@ -13,7 +13,7 @@ chmod 600 ~/.kaggle/kaggle.json
 
 __Using this command to download to dataset to your own laptop__
 
-**kaggle datasets download -d ankit1743/skyview-an-aerial-landscape-dataset**
+kaggle datasets download -d ankit1743/skyview-an-aerial-landscape-dataset
 
 ## Deep Learning
 
