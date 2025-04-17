@@ -3,7 +3,7 @@
 ## Deep Learning
 
 ### Enviroment confugureation
-contourpy==1.3.2
+__contourpy==1.3.2__
 cycler==0.12.1
 filelock==3.18.0
 fonttools==4.57.0
