@@ -1,7 +1,9 @@
 # 9517-group-project
+## How to download the dataset
+__Geting the kaggle KPI from Kaggle website__
 
 ## Deep Learning
-
+[[Kaggle Dataset Link](https://www.kaggle.com/datasets/ankit1743/skyview-an-aerial-landscape-dataset)
 ### Enviroment confugureation
 contourpy==1.3.2
 cycler==0.12.1
