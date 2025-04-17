@@ -1,9 +1,19 @@
 # 9517-group-project
 ## How to download the dataset
 __Geting the kaggle KPI from Kaggle website__
+[Kaggle Dataset Link](https://www.kaggle.com/datasets/ankit1743/skyview-an-aerial-landscape-dataset)
+
+
+mkdir -p ~/.kaggle
+mv /path/to/kaggle.json ~/.kaggle/
+chmod 600 ~/.kaggle/kaggle.json
+
+__Using this command to download to dataset to your own laptop
+__**kaggle datasets download -d ankit1743/skyview-an-aerial-landscape-dataset**__
 
 ## Deep Learning
-[[Kaggle Dataset Link](https://www.kaggle.com/datasets/ankit1743/skyview-an-aerial-landscape-dataset)
+
+
 ### Enviroment confugureation
 contourpy==1.3.2
 cycler==0.12.1
