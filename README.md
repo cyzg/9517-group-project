@@ -85,6 +85,30 @@ typing_extensions==4.13.2
 
 tzdata==2025.2
 
+### Overview
+
+This project investigates advanced deep learning techniques for image classification.  
+It compares the performance of the following convolutional neural network (CNN) architectures:
+
+- **ResNet**: A residual learning framework that enables training of very deep networks.
+- **SENet (Squeeze-and-Excitation Networks)**: Enhances channel interdependencies to improve representational power.
+- **EfficientNet**: Scales depth, width, and resolution efficiently using compound scaling.
+
+The models are evaluated on a custom dataset with metrics such as accuracy, confusion matrix, and Grad-CAM visualizations for model interpretability.
+
+### Structure
+
+-**The model name can be changed to the model you choose**
+1.model.train
+2.model.test
+3.model.visualisation
+4.misclassification result
+
+### How to run
+
+
+
+
 ## Machine Learning part
 
 The machine learning part focused on implementing and comparing various feature extraction techniques and classification models. The main code is included in the `machine_learning.ipynb` notebook, with additional result outputs available.
