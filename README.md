@@ -54,7 +54,21 @@ pip install -r requirements.txt
    git clone https://github.com/cyzg/9517-group-project.git
    cd 9517-group-projec/Deep Learning part
    ```
-**
+**Using ResNet model as an example**
+
+2. Training the model
+   ```bash
+   python ResNet18_train.py
+   ```
+3. Testing the model
+   ```bash
+   python ResNet_test.py
+   ```
+4. Visualize the testing result
+   ```
+   python ResNet_predict_result_misclassification
+   ```
+
 
 
 
