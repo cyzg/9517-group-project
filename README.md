@@ -36,6 +36,7 @@ The models are evaluated on a custom dataset with metrics such as accuracy, conf
 ### Structure
 
 **The model name can be changed to the model you choose**
+
 1.`model.train`
 
 2.`model.test`
@@ -45,6 +46,15 @@ The models are evaluated on a custom dataset with metrics such as accuracy, conf
 4.`misclassification result`
 
 ### How to run
+
+pip install -r requirements.txt
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/cyzg/9517-group-project.git
+   cd 9517-group-project
+   ```
+
 
 
 
