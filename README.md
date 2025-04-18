@@ -35,11 +35,14 @@ The models are evaluated on a custom dataset with metrics such as accuracy, conf
 
 ### Structure
 
--**The model name can be changed to the model you choose**
-1.model.train
-2.model.test
-3.model.visualisation
-4.misclassification result
+**The model name can be changed to the model you choose**
+1.'model.train'
+
+2.'model.test'
+
+3.'visualisation_ressult_model.py'
+
+4.'misclassification result'
 
 ### How to run
 
