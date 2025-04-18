@@ -19,71 +19,8 @@ kaggle datasets download -d ankit1743/skyview-an-aerial-landscape-dataset
 
 
 ### Enviroment confugureation
-contourpy==1.3.2
 
-cycler==0.12.1
-
-filelock==3.18.0
-
-fonttools==4.57.0
-
-fsspec==2025.3.2
-
-Jinja2==3.1.6
-
-joblib==1.4.2
-
-kiwisolver==1.4.8
-
-MarkupSafe==3.0.2
-
-matplotlib==3.10.1
-
-mpmath==1.3.0
-
-munch==4.0.0
-
-networkx==3.4.2
-
-numpy==2.2.4
-
-packaging==24.2
-
-pandas==2.2.3
-
-pillow==11.2.1
-
-pretrainedmodels==0.7.4
-
-pyparsing==3.2.3
-
-python-dateutil==2.9.0.post0
-
-pytz==2025.2
-
-scikit-learn==1.6.1
-
-scipy==1.15.2
-
-seaborn==0.13.2
-
-setuptools==78.1.0
-
-six==1.17.0
-
-sympy==1.13.1
-
-threadpoolctl==3.6.0
-
-torch==2.6.0
-
-torchvision==0.21.0
-
-tqdm==4.67.1
-
-typing_extensions==4.13.2
-
-tzdata==2025.2
+All the configuration have been show to the /9517-group-project/Deep Learning part/requirement.txt
 
 ### Overview
 
