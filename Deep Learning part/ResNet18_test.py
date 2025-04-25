@@ -1,7 +1,9 @@
+# Paths for data and model
 train_path = "/content/gdrive/MyDrive/9517 project/data/train"
 test_path = "/content/gdrive/MyDrive/9517 project/data/test"
 model_path = "/content/gdrive/MyDrive/9517 project/resnet18_epoch12.pth"
 
+# Clear and recreate result directories for Grad-CAM, misclassified images, and similar images
 shutil.rmtree("/content/gdrive/MyDrive/9517 project/Resnet/gradcam_heatmaps", ignore_errors=True)
 shutil.rmtree("/content/gdrive/MyDrive/9517 project/Resnet/misclassified_images", ignore_errors=True)
 shutil.rmtree("/content/gdrive/MyDrive/9517 project/Resnet/similar_images", ignore_errors=True)
@@ -9,6 +11,9 @@ os.makedirs("/content/gdrive/MyDrive/9517 project/Resnet/gradcam_heatmaps", exis
 os.makedirs("/content/gdrive/MyDrive/9517 project/Resnet/misclassified_images", exist_ok=True)
 os.makedirs("/content/gdrive/MyDrive/9517 project/Resnet/similar_images", exist_ok=True)
 
+
+
+# Define preprocessing for test images
 transform_test = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -16,26 +21,41 @@ transform_test = transforms.Compose([
                          [0.229, 0.224, 0.225])
 ])
 
+# Custom dataset class to return image paths along with images and labels
 class ImageFolderWithPaths(datasets.ImageFolder):
     def __getitem__(self, index):
         original = super().__getitem__(index)
         path = self.imgs[index][0]
         return original + (path,)
 
+
+
+# Load train dataset (for class labels) and test dataset (with transform)
 train_data = datasets.ImageFolder(train_path)
 test_data = ImageFolderWithPaths(test_path, transform=transform_test)
+
+# Create DataLoader for test data
 test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
 
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Load pretrained ResNet-18 model and replace final layer for our task
 model = models.resnet18(pretrained=True)
 model.fc = nn.Linear(model.fc.in_features, len(train_data.classes))
+
+# Load trained model weights
 model.load_state_dict(torch.load(model_path))
 model = model.to(device).eval()
+
+# Feature extractor (ResNet without final FC layer)
 feature_extractor = nn.Sequential(*list(model.children())[:-1]).to(device).eval()
 
 all_preds, all_labels, all_paths, all_features = [], [], [], []
 misclassified_info = []
 
+
+# Disable gradient calculation for inference
 with torch.no_grad():
     for imgs, labels, paths in test_loader:
         imgs = imgs.to(device)
@@ -47,7 +67,7 @@ with torch.no_grad():
         all_labels.extend(labels.numpy())
         all_paths.extend(paths)
         all_features.append(feats.cpu().numpy())
-
+        # Check for misclassified images
         for i in range(len(preds)):
             if preds[i] != labels[i]:
                 misclassified_info.append({
@@ -57,7 +77,10 @@ with torch.no_grad():
                     'feature': feats[i].cpu().numpy()
                 })
 
+# Combine all features into one numpy array
 all_features = np.concatenate(all_features, axis=0)
+
+# Create a DataFrame with prediction results and feature vectors
 df_all = pd.DataFrame({
     'path': all_paths,
     'label': [test_data.classes[y] for y in all_labels],
