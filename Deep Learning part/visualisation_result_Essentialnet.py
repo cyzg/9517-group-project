@@ -5,13 +5,17 @@ from sklearn.metrics.pairwise import cosine_similarity
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
+# ----------------------------- Grad-CAM Class Definition -----------------------------
 class GradCAM:
     def __init__(self, model, target_layer):
         self.model = model
         self.target_layer = target_layer
         self.gradients = None
         self.activations = None
+        # Hook to save activation during forward pass
         target_layer.register_forward_hook(self._save_activation)
+        # Hook to save gradient during backward pass
         target_layer.register_full_backward_hook(self._save_gradient)
 
     def _save_activation(self, module, input, output):
@@ -27,12 +31,14 @@ class GradCAM:
             class_idx = output.argmax(dim=1).item()
         loss = output[0, class_idx]
         loss.backward()
+        # Compute weights using Global Average Pooling on gradients
         weights = self.gradients.mean(dim=(2, 3), keepdim=True)
+        # Compute weighted sum of activations
         cam = F.relu(cam).squeeze().cpu().numpy()
         cam = cv2.resize(cam, (224, 224))
         cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)
         return cam
-
+# ----------------------------- Heatmap Overlay Function -----------------------------
 def overlay_heatmap(img_path, cam):
     raw = cv2.imread(img_path)
     raw = cv2.resize(raw, (224, 224))
@@ -44,6 +50,7 @@ def overlay_heatmap(img_path, cam):
 target_layer = model.features[-1]
 gradcam = GradCAM(model, target_layer)
 
+# ----------------------------- Similar Image Search for Misclassifications -----------------------------
 similarity_records = []
 for item in misclassified_info:
     f1 = item['feature'].reshape(1, -1)
