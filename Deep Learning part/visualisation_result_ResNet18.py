@@ -5,6 +5,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
+
+# --------------------- Grad-CAM Definition ---------------------
 class GradCAM:
     def __init__(self, model, target_layer):
         self.model = model
@@ -34,6 +37,7 @@ class GradCAM:
         cam = (cam - cam.min()) / (cam.max() - cam.min() + 1e-8)
         return cam
 
+# --------------------- Overlay Heatmap ---------------------
 def overlay_heatmap(img_path, cam):
     raw = cv2.imread(img_path)
     raw = cv2.resize(raw, (224, 224))
@@ -42,19 +46,29 @@ def overlay_heatmap(img_path, cam):
     return overlay
 
 # Grad-CAM target layer for ResNet: layer4
+
+# --------------------- Initialize Grad-CAM ---------------------
 target_layer = model.layer4
 gradcam = GradCAM(model, target_layer)
 
+# --------------------- Find Similar Images for Misclassifications ---------------------
 similarity_records = []
 for item in misclassified_info:
-    f1 = item['feature'].reshape(1, -1)
-    pred_class = item['predicted_label']
+    f1 = item['feature'].reshape(1, -1)# Reshape feature vector of misclassified image
+    pred_class = item['predicted_label'] # Get the class that was wrongly predicted
 
+
+
+    # Filter all images that were actually predicted as that class
     candidates = df_all[df_all['label'] == pred_class]
     candidate_feats = np.stack(candidates['feature'].values)
+
+     # Compute cosine similarity with all candidates
     similarities = cosine_similarity(f1, candidate_feats).flatten()
     max_idx = np.argmax(similarities)
     similar_path = candidates.iloc[max_idx]['path']
+
+    # Save information for the most similar image
     similarity_records.append({
         'wrong_image': item['filename'],
         'true_label': item['true_label'],
@@ -73,12 +87,17 @@ for item in misclassified_info:
     heatmap_path = os.path.join("/content/gdrive/MyDrive/9517 project/Resnet/gradcam_heatmaps", os.path.basename(item['filename']))
     cv2.imwrite(heatmap_path, heatmap_image)
 
+
+# --------------------- Save Similarity Results as CSV ---------------------
 df_sim = pd.DataFrame(similarity_records)
 df_sim.to_csv("/content/gdrive/MyDrive/9517 project/Resnet/misclassified_similarity.csv", index=False)
 
+# --------------------- Print Classification Metrics ---------------------
 print("Classification Report:")
 print(classification_report(all_labels, all_preds, target_names=test_data.classes))
 
+
+# --------------------- Plot Confusion Matrix ---------------------
 cm = confusion_matrix(all_labels, all_preds)
 plt.figure(figsize=(12, 8))
 sns.heatmap(cm, annot=True, fmt="d", xticklabels=test_data.classes, yticklabels=test_data.classes, cmap="Blues")
