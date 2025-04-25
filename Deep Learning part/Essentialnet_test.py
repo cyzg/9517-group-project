@@ -10,18 +10,23 @@ from torchvision.models import efficientnet_b0
 from torch.utils.data import DataLoader
 from PIL import Image
 
+# ---------------------- Paths ----------------------
 train_path = "/content/gdrive/MyDrive/9517 project/data/train"
 test_path = "/content/gdrive/MyDrive/9517 project/data/test"
 model_path = "/content/gdrive/MyDrive/9517 project/Efficientnet_epoch12.pth"
 
+# ---------------------- Clean up previous results ----------------------
 shutil.rmtree("/content/gdrive/MyDrive/9517 project/Efficientnet/gradcam_heatmaps", ignore_errors=True)
 shutil.rmtree("/content/gdrive/MyDrive/9517 project/Efficientnet/misclassified_images", ignore_errors=True)
 shutil.rmtree("/content/gdrive/MyDrive/9517 project/Efficientnet/similar_images", ignore_errors=True)
 
+# ---------------------- Create fresh folders for output ----------------------
 os.makedirs("/content/gdrive/MyDrive/9517 project/Efficientnet/gradcam_heatmaps", exist_ok=True)
 os.makedirs("/content/gdrive/MyDrive/9517 project/Efficientnet/misclassified_images", exist_ok=True)
 os.makedirs("/content/gdrive/MyDrive/9517 project/Efficientnet/similar_images", exist_ok=True)
 
+
+# ---------------------- Define Transformations for Test Set ----------------------
 transform_test = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -29,22 +34,26 @@ transform_test = transforms.Compose([
                          [0.229, 0.224, 0.225])
 ])
 
+# ---------------------- Custom Dataset Class to Return Paths ----------------------
 class ImageFolderWithPaths(datasets.ImageFolder):
     def __getitem__(self, index):
         original = super().__getitem__(index)
-        path = self.imgs[index][0]
-        return original + (path,)
+        path = self.imgs[index][0] # Get image path
+        return original + (path,) # Return (image_tensor, label, path)
 
+# ---------------------- Load Data ----------------------
 train_data = datasets.ImageFolder(train_path)
 test_data = ImageFolderWithPaths(test_path, transform=transform_test)
 test_loader = DataLoader(test_data, batch_size=32, shuffle=False)
 
+# ---------------------- Load Pretrained EfficientNet ----------------------
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = efficientnet_b0(pretrained=True)
 model.classifier[1] = nn.Linear(model.classifier[1].in_features, len(train_data.classes))
 model.load_state_dict(torch.load(model_path))
 model = model.to(device).eval()
 
+# ---------------------- Feature Extractor from Backbone ----------------------
 feature_extractor = nn.Sequential(*list(model.children())[:-1]).to(device).eval()
 
 
@@ -74,6 +83,7 @@ with torch.no_grad():
                     'feature': feats[i].cpu().numpy()
                 })
 
+# ---------------------- Final Feature & Prediction Table ----------------------
 all_features = np.concatenate(all_features, axis=0)
 df_all = pd.DataFrame({
     'path': all_paths,
