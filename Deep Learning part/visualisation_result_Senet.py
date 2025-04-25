@@ -12,6 +12,8 @@ class GradCAM:
         self.target_layer = target_layer
         self.gradients = None
         self.activations = None
+
+        # Register hooks to capture activations and gradients
         target_layer.register_forward_hook(self._save_activation)
         target_layer.register_full_backward_hook(self._save_gradient)
 
@@ -24,16 +26,23 @@ class GradCAM:
     def generate(self, input_tensor, class_idx=None):
         self.model.zero_grad()
         output = self.model(input_tensor)
+
+        # If no class is specified, use the predicted class
         if class_idx is None:
             class_idx = output.argmax(dim=1).item()
+
+        # Get the loss value of the specific class
         loss = output[0, class_idx]
         loss.backward()
+        # Global Average Pooling over gradients (channel-wise importance)
         weights = self.gradients.mean(dim=(2, 3), keepdim=True)
+        # Compute the weighted sum of activations
         cam = (weights * self.activations).sum(dim=1, keepdim=True)
         cam = F.relu(cam).squeeze().cpu().numpy()
         cam = cv2.resize(cam, (224, 224))
         cam = (cam - cam.min()) / (cam.max() + 1e-8)
         return cam
+# ------------------------- Heatmap Overlay Function -------------------------
 def overlay_heatmap(img_path, cam):
     raw = cv2.imread(img_path)
     raw = cv2.resize(raw, (224, 224))
@@ -45,6 +54,7 @@ def overlay_heatmap(img_path, cam):
 target_layer = model.layer4
 gradcam = GradCAM(model, target_layer)
 
+# ------------------------- Find Most Similar Images for Misclassifications -------------------------
 similarity_records = []
 for item in misclassified_info:
     f1 = item['feature'].reshape(1, -1)
@@ -72,11 +82,15 @@ for item in misclassified_info:
     heatmap_path = os.path.join("/content/gdrive/MyDrive/9517 project/SENet/gradcam_heatmaps", os.path.basename(item['filename']))
     cv2.imwrite(heatmap_path, heatmap_image)
 
+# ------------------------- Save Similarity Results to CSV -------------------------
 df_sim = pd.DataFrame(similarity_records)
 df_sim.to_csv("/content/gdrive/MyDrive/9517 project/SENet/misclassified_similarity.csv", index=False)
 
+# ------------------------- Print Classification Report -------------------------
 print("Classification Report:")
 print(classification_report(all_labels, all_preds, target_names=test_data.classes))
+
+# ------------------------- Plot Confusion Matrix -------------------------
 cm = confusion_matrix(all_labels, all_preds)
 plt.figure(figsize=(12, 8))
 sns.heatmap(cm, annot=True, fmt="d", xticklabels=test_data.classes, yticklabels=test_data.classes, cmap="Blues")
